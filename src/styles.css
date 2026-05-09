@@ -44,15 +44,15 @@
   --radius: 14px;
 
   /* Brand */
-  --primary: oklch(0.586 0.181 18.5);          /* #C93A4A ruby */
+  --primary: oklch(0.586 0.181 18.5); /* #C93A4A ruby */
   --primary-foreground: oklch(0.99 0 0);
-  --primary-soft: oklch(0.97 0.022 17);         /* #FFF0F3 */
-  --primary-deep: oklch(0.336 0.107 16);        /* #5A1F2C plum */
+  --primary-soft: oklch(0.97 0.022 17); /* #FFF0F3 */
+  --primary-deep: oklch(0.336 0.107 16); /* #5A1F2C plum */
 
   /* Surfaces */
-  --background: oklch(0.974 0.003 247);         /* #F4F6F8 */
+  --background: oklch(0.974 0.003 247); /* #F4F6F8 */
   --surface: oklch(1 0 0);
-  --foreground: oklch(0.27 0.03 257);           /* #1F2937 */
+  --foreground: oklch(0.27 0.03 257); /* #1F2937 */
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.27 0.03 257);
   --popover: oklch(1 0 0);
@@ -61,7 +61,7 @@
   --secondary: oklch(0.97 0.022 17);
   --secondary-foreground: oklch(0.336 0.107 16);
   --muted: oklch(0.965 0.005 247);
-  --muted-foreground: oklch(0.56 0.024 256);    /* #667085 */
+  --muted-foreground: oklch(0.56 0.024 256); /* #667085 */
   --accent: oklch(0.97 0.022 17);
   --accent-foreground: oklch(0.336 0.107 16);
 
@@ -69,17 +69,18 @@
   --destructive-foreground: oklch(0.99 0 0);
   --success: oklch(0.65 0.15 155);
 
-  --border: oklch(0.93 0.005 256);              /* #E6E8EC */
+  --border: oklch(0.93 0.005 256); /* #E6E8EC */
   --input: oklch(0.93 0.005 256);
   --ring: oklch(0.586 0.181 18.5);
 
-  --shadow-soft: 0 8px 24px rgba(16,24,40,.06);
+  --shadow-soft: 0 8px 24px rgba(16, 24, 40, 0.06);
   --shadow-elevated: 0 20px 48px -12px rgba(201, 58, 74, 0.18);
 
-  --gradient-ruby: linear-gradient(135deg, #C93A4A 0%, #8E2334 100%);
-  --gradient-ruby-soft: linear-gradient(135deg, #FFF0F3 0%, #FFFFFF 100%);
-  --gradient-hero: radial-gradient(1200px 600px at 80% -10%, rgba(201,58,74,0.10), transparent 60%),
-                   radial-gradient(800px 500px at 0% 20%, rgba(90,31,44,0.06), transparent 60%);
+  --gradient-ruby: linear-gradient(135deg, #c93a4a 0%, #8e2334 100%);
+  --gradient-ruby-soft: linear-gradient(135deg, #fff0f3 0%, #ffffff 100%);
+  --gradient-hero:
+    radial-gradient(1200px 600px at 80% -10%, rgba(201, 58, 74, 0.1), transparent 60%),
+    radial-gradient(800px 500px at 0% 20%, rgba(90, 31, 44, 0.06), transparent 60%);
 }
 
 .dark {
@@ -95,25 +96,42 @@
 }
 
 @layer base {
-  * { border-color: var(--color-border); }
-  html { font-family: var(--font-sans); }
+  * {
+    border-color: var(--color-border);
+  }
+  html {
+    font-family: var(--font-sans);
+  }
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
   }
-  h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: -0.02em; }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
 }
 
 @layer components {
   .btn-ruby {
     background-image: var(--gradient-ruby);
     color: white;
-    box-shadow: 0 6px 16px -4px rgba(201,58,74,0.45);
-    transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
+    box-shadow: 0 6px 16px -4px rgba(201, 58, 74, 0.45);
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease,
+      filter 0.2s ease;
   }
-  .btn-ruby:hover { transform: translateY(-1px); filter: brightness(1.05); box-shadow: 0 10px 24px -4px rgba(201,58,74,0.55); }
+  .btn-ruby:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.05);
+    box-shadow: 0 10px 24px -4px rgba(201, 58, 74, 0.55);
+  }
 
   .card-surface {
     background: var(--surface);
@@ -123,11 +141,18 @@
   }
 
   .chip {
-    display: inline-flex; align-items: center; gap: .375rem;
-    padding: .25rem .625rem; border-radius: 999px;
-    background: var(--primary-soft); color: var(--primary-deep);
-    font-size: .75rem; font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.25rem 0.625rem;
+    border-radius: 999px;
+    background: var(--primary-soft);
+    color: var(--primary-deep);
+    font-size: 0.75rem;
+    font-weight: 600;
   }
 
-  .hero-bg { background-image: var(--gradient-hero); }
+  .hero-bg {
+    background-image: var(--gradient-hero);
+  }
 }

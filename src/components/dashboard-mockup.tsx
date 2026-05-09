@@ -31,8 +31,12 @@ export function DashboardMockup() {
             <Bell className="w-4 h-4" />
           </div>
           <div>
-            <p className="text-sm font-semibold text-primary-deep">142 orders auto-processed today</p>
-            <p className="text-xs text-primary-deep/70 mt-0.5">Workflow “VIP fast-track” saved 3h 12m of admin work.</p>
+            <p className="text-sm font-semibold text-primary-deep">
+              142 orders auto-processed today
+            </p>
+            <p className="text-xs text-primary-deep/70 mt-0.5">
+              Workflow “VIP fast-track” saved 3h 12m of admin work.
+            </p>
           </div>
         </div>
       </div>
@@ -52,17 +56,33 @@ function Stat({ label, value, trend }: { label: string; value: string; trend: st
   );
 }
 
-function PluginRow({ emoji, name, status, version, warn }: { emoji: string; name: string; status: string; version: string; warn?: boolean }) {
+function PluginRow({
+  emoji,
+  name,
+  status,
+  version,
+  warn,
+}: {
+  emoji: string;
+  name: string;
+  status: string;
+  version: string;
+  warn?: boolean;
+}) {
   return (
     <div className="flex items-center justify-between rounded-xl border border-border p-3">
       <div className="flex items-center gap-3">
-        <div className="w-9 h-9 rounded-lg bg-primary-soft grid place-items-center text-lg">{emoji}</div>
+        <div className="w-9 h-9 rounded-lg bg-primary-soft grid place-items-center text-lg">
+          {emoji}
+        </div>
         <div>
           <p className="text-sm font-semibold">{name}</p>
           <p className="text-[11px] text-muted-foreground">v{version} · Licensed</p>
         </div>
       </div>
-      <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-full inline-flex items-center gap-1 ${warn ? "bg-amber-50 text-amber-700" : "bg-emerald-50 text-emerald-700"}`}>
+      <span
+        className={`text-[11px] font-semibold px-2.5 py-1 rounded-full inline-flex items-center gap-1 ${warn ? "bg-amber-50 text-amber-700" : "bg-emerald-50 text-emerald-700"}`}
+      >
         {warn ? <RefreshCw className="w-3 h-3" /> : <CheckCircle2 className="w-3 h-3" />}
         {status}
       </span>

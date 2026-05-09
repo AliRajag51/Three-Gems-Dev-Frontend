@@ -18,7 +18,8 @@ export const plugins: Plugin[] = [
     slug: "woocommerce-payment-automation",
     name: "WooCommerce Payment Automation",
     tagline: "Automate payouts, refunds & reconciliation",
-    description: "Save hours every week with rule-based payment automations, smart retries, and reconciliation reports built for WooCommerce stores.",
+    description:
+      "Save hours every week with rule-based payment automations, smart retries, and reconciliation reports built for WooCommerce stores.",
     price: 79,
     rating: 4.9,
     reviews: 248,
@@ -38,7 +39,8 @@ export const plugins: Plugin[] = [
     slug: "woocommerce-affiliate-manager",
     name: "WooCommerce Affiliate Manager",
     tagline: "Run a powerful affiliate program",
-    description: "Recruit, track, and pay affiliates without leaving your WordPress admin. Beautiful affiliate dashboard included.",
+    description:
+      "Recruit, track, and pay affiliates without leaving your WordPress admin. Beautiful affiliate dashboard included.",
     price: 99,
     rating: 4.8,
     reviews: 192,
@@ -58,7 +60,8 @@ export const plugins: Plugin[] = [
     slug: "woocommerce-checkout-enhancer",
     name: "WooCommerce Checkout Enhancer",
     tagline: "Convert more carts into orders",
-    description: "Modern, fast, mobile-first checkout with field validation, address autocomplete, and one-click upsells.",
+    description:
+      "Modern, fast, mobile-first checkout with field validation, address autocomplete, and one-click upsells.",
     price: 69,
     rating: 4.9,
     reviews: 412,
@@ -78,7 +81,8 @@ export const plugins: Plugin[] = [
     slug: "order-status-automation",
     name: "Order Status Automation",
     tagline: "Triggers, actions, workflows",
-    description: "A visual workflow builder that fires actions when order statuses change — emails, webhooks, stock, tags, and more.",
+    description:
+      "A visual workflow builder that fires actions when order statuses change — emails, webhooks, stock, tags, and more.",
     price: 59,
     rating: 4.7,
     reviews: 156,
@@ -98,7 +102,8 @@ export const plugins: Plugin[] = [
     slug: "smart-shipping-rules",
     name: "Smart Shipping Rules",
     tagline: "Conditional shipping that just works",
-    description: "Build complex shipping rules with conditions for weight, zone, product, customer role and more — without writing code.",
+    description:
+      "Build complex shipping rules with conditions for weight, zone, product, customer role and more — without writing code.",
     price: 49,
     rating: 4.8,
     reviews: 287,
@@ -118,7 +123,8 @@ export const plugins: Plugin[] = [
     slug: "license-manager-pro",
     name: "License Manager Pro",
     tagline: "Sell licensed products with confidence",
-    description: "Generate, deliver, and manage software licenses for digital products. Built-in API for activation and validation.",
+    description:
+      "Generate, deliver, and manage software licenses for digital products. Built-in API for activation and validation.",
     price: 119,
     rating: 4.9,
     reviews: 134,

@@ -8,7 +8,10 @@ export const Route = createFileRoute("/plugins/")({
   head: () => ({
     meta: [
       { title: "All Plugins — Three Gems" },
-      { name: "description", content: "Browse the complete catalog of Three Gems WooCommerce and WordPress plugins." },
+      {
+        name: "description",
+        content: "Browse the complete catalog of Three Gems WooCommerce and WordPress plugins.",
+      },
     ],
   }),
   component: PluginsPage,
@@ -20,7 +23,9 @@ function PluginsPage() {
   const [q, setQ] = useState("");
 
   const filtered = plugins.filter(
-    (p) => (cat === "All" || p.category === cat) && (q === "" || p.name.toLowerCase().includes(q.toLowerCase())),
+    (p) =>
+      (cat === "All" || p.category === cat) &&
+      (q === "" || p.name.toLowerCase().includes(q.toLowerCase())),
   );
 
   return (
@@ -28,8 +33,12 @@ function PluginsPage() {
       <section className="hero-bg">
         <div className="mx-auto max-w-7xl px-5 lg:px-8 py-16 lg:py-20">
           <span className="chip">Plugin Catalog</span>
-          <h1 className="mt-4 font-display text-4xl sm:text-5xl font-bold tracking-tight">All Plugins</h1>
-          <p className="mt-3 text-muted-foreground max-w-2xl">Premium WordPress & WooCommerce plugins, crafted with care by Three Gems.</p>
+          <h1 className="mt-4 font-display text-4xl sm:text-5xl font-bold tracking-tight">
+            All Plugins
+          </h1>
+          <p className="mt-3 text-muted-foreground max-w-2xl">
+            Premium WordPress & WooCommerce plugins, crafted with care by Three Gems.
+          </p>
         </div>
       </section>
 
@@ -41,7 +50,9 @@ function PluginsPage() {
                 key={c}
                 onClick={() => setCat(c)}
                 className={`px-4 py-2 rounded-full text-sm font-semibold border transition-colors ${
-                  cat === c ? "bg-primary text-primary-foreground border-primary" : "bg-surface border-border hover:border-primary/40"
+                  cat === c
+                    ? "bg-primary text-primary-foreground border-primary"
+                    : "bg-surface border-border hover:border-primary/40"
                 }`}
               >
                 {c}
@@ -60,7 +71,9 @@ function PluginsPage() {
         </div>
 
         <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((p) => <PluginCard key={p.slug} p={p} />)}
+          {filtered.map((p) => (
+            <PluginCard key={p.slug} p={p} />
+          ))}
         </div>
         {filtered.length === 0 && (
           <p className="text-center py-20 text-muted-foreground">No plugins match your search.</p>

@@ -8,7 +8,7 @@ export function SiteFooter() {
       links: [
         { to: "/plugins", label: "All Plugins" },
         { to: "/pricing", label: "Pricing" },
-        { to: "/plugins/woocommerce-payment-automation", label: "Featured Plugin" },
+        { href: "/plugins/woocommerce-payment-automation", label: "Featured Plugin" },
       ],
     },
     {
@@ -39,7 +39,8 @@ export function SiteFooter() {
             <span className="font-display text-lg font-bold">Three Gems</span>
           </div>
           <p className="mt-4 text-sm text-muted-foreground max-w-sm">
-            Premium WordPress and WooCommerce plugins built for serious stores. Clean, reliable, secure.
+            Premium WordPress and WooCommerce plugins built for serious stores. Clean, reliable,
+            secure.
           </p>
         </div>
         {cols.map((c) => (
@@ -47,10 +48,22 @@ export function SiteFooter() {
             <h4 className="text-sm font-semibold text-foreground">{c.title}</h4>
             <ul className="mt-4 space-y-2.5">
               {c.links.map((l) => (
-                <li key={l.to}>
-                  <Link to={l.to} className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                    {l.label}
-                  </Link>
+                <li key={l.label}>
+                  {"href" in l ? (
+                    <a
+                      href={l.href}
+                      className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      {l.label}
+                    </a>
+                  ) : (
+                    <Link
+                      to={l.to}
+                      className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      {l.label}
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>
@@ -59,8 +72,12 @@ export function SiteFooter() {
       </div>
       <div className="border-t border-border">
         <div className="mx-auto max-w-7xl px-5 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} Three Gems. All rights reserved.</p>
-          <p className="text-xs text-muted-foreground">Built for WooCommerce store owners, agencies & developers.</p>
+          <p className="text-xs text-muted-foreground">
+            © {new Date().getFullYear()} Three Gems. All rights reserved.
+          </p>
+          <p className="text-xs text-muted-foreground">
+            Built for WooCommerce store owners, agencies & developers.
+          </p>
         </div>
       </div>
     </footer>

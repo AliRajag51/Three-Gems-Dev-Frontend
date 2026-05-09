@@ -6,7 +6,9 @@ export function PluginCard({ p }: { p: Plugin }) {
   return (
     <div className="card-surface p-6 flex flex-col group hover:-translate-y-1 hover:shadow-[0_20px_48px_-12px_rgba(201,58,74,0.18)] transition-all duration-300">
       <div className="flex items-start justify-between">
-        <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${p.iconColor} grid place-items-center text-2xl shadow-md`}>
+        <div
+          className={`w-12 h-12 rounded-xl bg-gradient-to-br ${p.iconColor} grid place-items-center text-2xl shadow-md`}
+        >
           <span>{p.emoji}</span>
         </div>
         <span className="chip">{p.category}</span>

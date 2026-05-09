@@ -1,5 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ShieldCheck, Zap, LayoutDashboard, KeyRound, Headphones, RefreshCw, ArrowRight, Check } from "lucide-react";
+import {
+  ShieldCheck,
+  Zap,
+  LayoutDashboard,
+  KeyRound,
+  Headphones,
+  RefreshCw,
+  ArrowRight,
+  Check,
+} from "lucide-react";
 import { plugins } from "@/data/plugins";
 import { PluginCard } from "@/components/plugin-card";
 import { DashboardMockup } from "@/components/dashboard-mockup";
@@ -8,19 +17,47 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Three Gems — Powerful WooCommerce Plugins" },
-      { name: "description", content: "Three Gems creates clean, reliable WordPress and WooCommerce plugins that help store owners automate workflows, improve checkout, and grow faster." },
+      {
+        name: "description",
+        content:
+          "Three Gems creates clean, reliable WordPress and WooCommerce plugins that help store owners automate workflows, improve checkout, and grow faster.",
+      },
     ],
   }),
   component: HomePage,
 });
 
 const features = [
-  { icon: ShieldCheck, title: "WooCommerce Ready", text: "Tested against the latest WooCommerce releases and themes." },
-  { icon: Zap, title: "Easy Setup", text: "Install, activate, configure in minutes — guided onboarding included." },
-  { icon: LayoutDashboard, title: "Clean Admin UI", text: "Native WordPress feel with thoughtful dashboards your team will love." },
-  { icon: KeyRound, title: "Secure Licensing", text: "Built-in license validation, site limits and renewals you control." },
-  { icon: Headphones, title: "Fast Support", text: "Real engineers answering tickets — average response under 6 hours." },
-  { icon: RefreshCw, title: "Regular Updates", text: "Continuous improvements, security patches and new features." },
+  {
+    icon: ShieldCheck,
+    title: "WooCommerce Ready",
+    text: "Tested against the latest WooCommerce releases and themes.",
+  },
+  {
+    icon: Zap,
+    title: "Easy Setup",
+    text: "Install, activate, configure in minutes — guided onboarding included.",
+  },
+  {
+    icon: LayoutDashboard,
+    title: "Clean Admin UI",
+    text: "Native WordPress feel with thoughtful dashboards your team will love.",
+  },
+  {
+    icon: KeyRound,
+    title: "Secure Licensing",
+    text: "Built-in license validation, site limits and renewals you control.",
+  },
+  {
+    icon: Headphones,
+    title: "Fast Support",
+    text: "Real engineers answering tickets — average response under 6 hours.",
+  },
+  {
+    icon: RefreshCw,
+    title: "Regular Updates",
+    text: "Continuous improvements, security patches and new features.",
+  },
 ];
 
 function HomePage() {
@@ -36,18 +73,28 @@ function HomePage() {
             </span>
             <h1 className="mt-5 font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.05] tracking-tight">
               Powerful WooCommerce Plugins{" "}
-              <span className="bg-clip-text text-transparent" style={{ backgroundImage: "var(--gradient-ruby)" }}>
+              <span
+                className="bg-clip-text text-transparent"
+                style={{ backgroundImage: "var(--gradient-ruby)" }}
+              >
                 Built for Serious Stores
               </span>
             </h1>
             <p className="mt-5 text-lg text-muted-foreground max-w-xl leading-relaxed">
-              Three Gems creates clean, reliable, and easy-to-use WordPress plugins that help store owners automate workflows, improve checkout, and grow faster.
+              Three Gems creates clean, reliable, and easy-to-use WordPress plugins that help store
+              owners automate workflows, improve checkout, and grow faster.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Link to="/plugins" className="btn-ruby px-6 py-3.5 rounded-xl text-sm font-semibold inline-flex items-center gap-2">
+              <Link
+                to="/plugins"
+                className="btn-ruby px-6 py-3.5 rounded-xl text-sm font-semibold inline-flex items-center gap-2"
+              >
                 Browse Plugins <ArrowRight className="w-4 h-4" />
               </Link>
-              <Link to="/docs" className="px-6 py-3.5 rounded-xl text-sm font-semibold border border-border bg-surface hover:border-primary hover:text-primary transition-colors">
+              <Link
+                to="/docs"
+                className="px-6 py-3.5 rounded-xl text-sm font-semibold border border-border bg-surface hover:border-primary hover:text-primary transition-colors"
+              >
                 View Documentation
               </Link>
             </div>
@@ -87,12 +134,19 @@ function HomePage() {
       <section className="mx-auto max-w-7xl px-5 lg:px-8 py-20">
         <div className="max-w-2xl">
           <span className="chip">Why Three Gems</span>
-          <h2 className="mt-4 font-display text-3xl sm:text-4xl font-bold tracking-tight">Everything serious WooCommerce stores need</h2>
-          <p className="mt-3 text-muted-foreground">Built by engineers who run real stores. Every plugin ships with the same quality bar.</p>
+          <h2 className="mt-4 font-display text-3xl sm:text-4xl font-bold tracking-tight">
+            Everything serious WooCommerce stores need
+          </h2>
+          <p className="mt-3 text-muted-foreground">
+            Built by engineers who run real stores. Every plugin ships with the same quality bar.
+          </p>
         </div>
         <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {features.map((f) => (
-            <div key={f.title} className="card-surface p-6 hover:-translate-y-0.5 hover:border-primary/40 transition-all">
+            <div
+              key={f.title}
+              className="card-surface p-6 hover:-translate-y-0.5 hover:border-primary/40 transition-all"
+            >
               <div className="w-11 h-11 rounded-xl bg-primary-soft text-primary grid place-items-center">
                 <f.icon className="w-5 h-5" />
               </div>
@@ -108,10 +162,17 @@ function HomePage() {
         <div className="flex items-end justify-between gap-6 flex-wrap">
           <div className="max-w-2xl">
             <span className="chip">Featured Plugins</span>
-            <h2 className="mt-4 font-display text-3xl sm:text-4xl font-bold tracking-tight">Hand-crafted tools for WooCommerce</h2>
-            <p className="mt-3 text-muted-foreground">Pick a plugin, install in minutes, and start automating today.</p>
+            <h2 className="mt-4 font-display text-3xl sm:text-4xl font-bold tracking-tight">
+              Hand-crafted tools for WooCommerce
+            </h2>
+            <p className="mt-3 text-muted-foreground">
+              Pick a plugin, install in minutes, and start automating today.
+            </p>
           </div>
-          <Link to="/plugins" className="text-sm font-semibold text-primary inline-flex items-center gap-1 hover:gap-2 transition-all">
+          <Link
+            to="/plugins"
+            className="text-sm font-semibold text-primary inline-flex items-center gap-1 hover:gap-2 transition-all"
+          >
             See all plugins <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
@@ -124,18 +185,31 @@ function HomePage() {
 
       {/* CTA */}
       <section className="mx-auto max-w-7xl px-5 lg:px-8 pb-8">
-        <div className="relative overflow-hidden rounded-3xl p-10 lg:p-14" style={{ backgroundImage: "var(--gradient-ruby)" }}>
+        <div
+          className="relative overflow-hidden rounded-3xl p-10 lg:p-14"
+          style={{ backgroundImage: "var(--gradient-ruby)" }}
+        >
           <div className="absolute -right-20 -top-20 w-80 h-80 rounded-full bg-white/10 blur-3xl" />
           <div className="relative grid lg:grid-cols-2 gap-8 items-center">
             <div>
-              <h3 className="font-display text-3xl sm:text-4xl font-bold text-white tracking-tight">Ready to ship a faster, smarter store?</h3>
-              <p className="mt-3 text-white/85 max-w-lg">Join hundreds of WooCommerce stores already running on Three Gems plugins.</p>
+              <h3 className="font-display text-3xl sm:text-4xl font-bold text-white tracking-tight">
+                Ready to ship a faster, smarter store?
+              </h3>
+              <p className="mt-3 text-white/85 max-w-lg">
+                Join hundreds of WooCommerce stores already running on Three Gems plugins.
+              </p>
             </div>
             <div className="flex flex-wrap gap-3 lg:justify-end">
-              <Link to="/pricing" className="bg-white text-primary-deep px-6 py-3.5 rounded-xl text-sm font-semibold hover:bg-white/90 transition-colors">
+              <Link
+                to="/pricing"
+                className="bg-white text-primary-deep px-6 py-3.5 rounded-xl text-sm font-semibold hover:bg-white/90 transition-colors"
+              >
                 See pricing
               </Link>
-              <Link to="/contact" className="bg-white/10 backdrop-blur text-white border border-white/30 px-6 py-3.5 rounded-xl text-sm font-semibold hover:bg-white/20 transition-colors">
+              <Link
+                to="/contact"
+                className="bg-white/10 backdrop-blur text-white border border-white/30 px-6 py-3.5 rounded-xl text-sm font-semibold hover:bg-white/20 transition-colors"
+              >
                 Talk to sales
               </Link>
             </div>

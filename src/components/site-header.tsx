@@ -37,7 +37,10 @@ export function SiteHeader() {
         </nav>
 
         <div className="hidden lg:flex items-center gap-2">
-          <Link to="/account" className="px-4 py-2 text-sm font-medium text-foreground hover:text-primary transition-colors">
+          <Link
+            to="/account"
+            className="px-4 py-2 text-sm font-medium text-foreground hover:text-primary transition-colors"
+          >
             Sign in
           </Link>
           <Link to="/plugins" className="btn-ruby px-4 py-2 rounded-xl text-sm font-semibold">
@@ -54,12 +57,27 @@ export function SiteHeader() {
         <div className="lg:hidden border-t border-border bg-surface">
           <div className="px-5 py-3 flex flex-col">
             {nav.map((n) => (
-              <Link key={n.to} to={n.to} onClick={() => setOpen(false)} className="py-2.5 text-sm font-medium">
+              <Link
+                key={n.to}
+                to={n.to}
+                onClick={() => setOpen(false)}
+                className="py-2.5 text-sm font-medium"
+              >
                 {n.label}
               </Link>
             ))}
-            <Link to="/account" onClick={() => setOpen(false)} className="py-2.5 text-sm font-medium">Sign in</Link>
-            <Link to="/plugins" onClick={() => setOpen(false)} className="btn-ruby mt-2 px-4 py-2 rounded-xl text-sm font-semibold text-center">
+            <Link
+              to="/account"
+              onClick={() => setOpen(false)}
+              className="py-2.5 text-sm font-medium"
+            >
+              Sign in
+            </Link>
+            <Link
+              to="/plugins"
+              onClick={() => setOpen(false)}
+              className="btn-ruby mt-2 px-4 py-2 rounded-xl text-sm font-semibold text-center"
+            >
               Browse Plugins
             </Link>
           </div>
