@@ -21,13 +21,14 @@ export const Route = createFileRoute("/checkout")({
 
 function CheckoutPage() {
   const { plugin: slug, license = "single" } = Route.useSearch();
+  const lic: "single" | "five" | "unlimited" = license ?? "single";
   const plugin = plugins.find((p) => p.slug === slug) ?? plugins[0];
-  const mult = { single: 1, five: 2.5, unlimited: 6 }[license];
+  const mult = { single: 1, five: 2.5, unlimited: 6 }[lic];
   const subtotal = Math.round(plugin.price * mult);
   const tax = Math.round(subtotal * 0.0);
   const total = subtotal + tax;
 
-  const licenseLabel = { single: "Single Site", five: "5 Sites", unlimited: "Unlimited Sites" }[license];
+  const licenseLabel = { single: "Single Site", five: "5 Sites", unlimited: "Unlimited Sites" }[lic];
 
   return (
     <div className="mx-auto max-w-7xl px-5 lg:px-8 py-12 lg:py-16">
