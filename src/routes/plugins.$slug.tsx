@@ -139,7 +139,7 @@ function PluginPage() {
           <div className="py-8">
             {tab === "Features" && (
               <ul className="grid sm:grid-cols-2 gap-3">
-                {p.features.map((f) => (
+                {p.features.map((f: string) => (
                   <li key={f} className="flex items-start gap-3 p-4 rounded-xl bg-surface border border-border">
                     <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                     <span className="text-sm font-medium">{f}</span>
