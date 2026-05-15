@@ -35,4 +35,18 @@ export default defineConfig({
       "@tanstack/query-core",
     ],
   },
+  // Dev-only proxy: forward /api/* to the backend so the browser sees same-origin
+  // requests. This lets Better-Auth's session cookies (httpOnly, SameSite=Lax)
+  // flow without CORS preflights or third-party-cookie restrictions. In
+  // production the frontend talks to a real API host configured via
+  // VITE_API_URL; see src/lib/api/client.ts.
+  server: {
+    proxy: {
+      "/api": {
+        target: "http://localhost:3000",
+        changeOrigin: false, // keep the original Origin header so backend CORS allow-list still applies
+        secure: false,
+      },
+    },
+  },
 });
