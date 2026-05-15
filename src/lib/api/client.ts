@@ -56,10 +56,16 @@ export interface ApiFetchOptions extends RequestInit {
  *
  * 204 No Content responses resolve to `undefined`.
  */
-export async function apiFetch<T = unknown>(path: string, options: ApiFetchOptions = {}): Promise<T> {
+export async function apiFetch<T = unknown>(
+  path: string,
+  options: ApiFetchOptions = {},
+): Promise<T> {
   const { json, searchParams, headers, ...rest } = options;
 
-  const url = new URL(path.startsWith("http") ? path : `${API_BASE}${path}`, window.location.origin);
+  const url = new URL(
+    path.startsWith("http") ? path : `${API_BASE}${path}`,
+    window.location.origin,
+  );
   if (searchParams) {
     for (const [k, v] of Object.entries(searchParams)) {
       if (v != null) url.searchParams.set(k, String(v));
@@ -85,7 +91,8 @@ export async function apiFetch<T = unknown>(path: string, options: ApiFetchOptio
   if (response.status === 204) return undefined as T;
 
   const contentType = response.headers.get("content-type") ?? "";
-  const isJson = contentType.includes("application/json") || contentType.includes("application/problem+json");
+  const isJson =
+    contentType.includes("application/json") || contentType.includes("application/problem+json");
   const payload = isJson ? await response.json() : await response.text();
 
   if (!response.ok) {
@@ -103,10 +110,16 @@ export async function apiFetch<T = unknown>(path: string, options: ApiFetchOptio
 export const api = {
   get: <T = unknown>(path: string, options?: Omit<ApiFetchOptions, "method" | "json">) =>
     apiFetch<T>(path, { ...options, method: "GET" }),
-  post: <T = unknown>(path: string, json?: unknown, options?: Omit<ApiFetchOptions, "method" | "json">) =>
-    apiFetch<T>(path, { ...options, method: "POST", json }),
-  patch: <T = unknown>(path: string, json?: unknown, options?: Omit<ApiFetchOptions, "method" | "json">) =>
-    apiFetch<T>(path, { ...options, method: "PATCH", json }),
+  post: <T = unknown>(
+    path: string,
+    json?: unknown,
+    options?: Omit<ApiFetchOptions, "method" | "json">,
+  ) => apiFetch<T>(path, { ...options, method: "POST", json }),
+  patch: <T = unknown>(
+    path: string,
+    json?: unknown,
+    options?: Omit<ApiFetchOptions, "method" | "json">,
+  ) => apiFetch<T>(path, { ...options, method: "PATCH", json }),
   delete: <T = unknown>(path: string, options?: Omit<ApiFetchOptions, "method" | "json">) =>
     apiFetch<T>(path, { ...options, method: "DELETE" }),
 };

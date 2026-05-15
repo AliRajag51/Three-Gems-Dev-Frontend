@@ -20,6 +20,9 @@ dist-ssr
 .wrangler/
 .dev.vars
 
+# Local git worktrees for parallel agent work
+.worktrees/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
