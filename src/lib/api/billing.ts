@@ -15,17 +15,20 @@ import type {
   SubscriptionSummary,
 } from "./types";
 
+/**
+ * Mirrors the backend's `BillingService.getCheckoutSession` return shape, which
+ * is intentionally minimal: it looks up our local `Order` row by external session
+ * id and returns `{ status, orderId }`. While the Stripe webhook is in flight,
+ * the order doesn't exist yet and the endpoint responds 404 — the success page
+ * treats that as "keep polling".
+ *
+ * Plaintext license keys are NOT returned here; they are delivered via the
+ * purchase-confirmation email and only the masked `keyPrefix` is ever visible
+ * in the UI afterwards (see /me/licenses).
+ */
 export interface CheckoutSessionStatus {
   status: string;
-  paymentStatus: string | null;
-  customerEmail: string | null;
-  amountTotal: number | null;
-  currency: string | null;
-  externalSessionId: string;
-  /** Set once our webhook has processed the completion and an Order row exists. */
   orderId: string | null;
-  /** When a fresh issuance happens at success time, we surface plaintext keys ONCE here. */
-  licenses?: Array<{ id: string; keyPrefix: string; plaintextKey?: string }>;
 }
 
 export const billingApi = {
