@@ -40,7 +40,14 @@ export default defineConfig({
   // flow without CORS preflights or third-party-cookie restrictions. In
   // production the frontend talks to a real API host configured via
   // VITE_API_URL; see src/lib/api/client.ts.
+  //
+  // Port is pinned to 5173 because the backend NestJS dev server lives on 3000.
+  // If we don't pin, Vite's default behavior on this template lands it on 3000
+  // and the two servers fight (Windows allows the double-bind but routes
+  // requests randomly between them).
   server: {
+    port: 5173,
+    strictPort: true,
     proxy: {
       "/api": {
         target: "http://localhost:3000",

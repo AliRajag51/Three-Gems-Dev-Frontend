@@ -14,7 +14,21 @@
  * `fetch` directly — so the contract stays in one place.
  */
 
-const API_BASE = import.meta.env.VITE_API_URL ?? "";
+/**
+ * Pick an API base URL that works in both browser and SSR contexts.
+ *
+ * - Browser: empty string → all paths stay relative ("/api/v1/...") and the
+ *   Vite dev proxy or production rewrite handles the rest.
+ * - SSR (TanStack Start's Nitro server): no `window` here. Reach the backend
+ *   directly via the explicit `VITE_API_URL` env, or fall back to the local
+ *   dev URL — which is the right answer because the SSR server runs on the
+ *   same machine as the backend in dev.
+ */
+function getApiBase(): string {
+  if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
+  if (typeof window !== "undefined") return ""; // relative — proxy handles it
+  return "http://localhost:3000";
+}
 
 /** Shape Better-Auth + our backend exception filter return on non-2xx. */
 export interface ApiProblem {
@@ -62,14 +76,16 @@ export async function apiFetch<T = unknown>(
 ): Promise<T> {
   const { json, searchParams, headers, ...rest } = options;
 
-  const url = new URL(
-    path.startsWith("http") ? path : `${API_BASE}${path}`,
-    window.location.origin,
-  );
+  // Build the URL string. Browser-side this is "/api/v1/..." (proxy applies);
+  // SSR-side it's "http://localhost:3000/api/v1/...".
+  let urlStr = path.startsWith("http") ? path : getApiBase() + path;
   if (searchParams) {
+    const usp = new URLSearchParams();
     for (const [k, v] of Object.entries(searchParams)) {
-      if (v != null) url.searchParams.set(k, String(v));
+      if (v != null) usp.set(k, String(v));
     }
+    const qs = usp.toString();
+    if (qs) urlStr += (urlStr.includes("?") ? "&" : "?") + qs;
   }
 
   const finalHeaders = new Headers(headers);
@@ -81,7 +97,7 @@ export async function apiFetch<T = unknown>(
     finalHeaders.set("Accept", "application/json");
   }
 
-  const response = await fetch(url.toString(), {
+  const response = await fetch(urlStr, {
     ...rest,
     headers: finalHeaders,
     credentials: "include",
