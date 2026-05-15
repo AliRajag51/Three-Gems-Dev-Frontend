@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VerifyEmailRouteImport } from './routes/verify-email'
 import { Route as SupportRouteImport } from './routes/support'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as DocsRouteImport } from './routes/docs'
@@ -20,6 +21,11 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as PluginsIndexRouteImport } from './routes/plugins.index'
 import { Route as PluginsSlugRouteImport } from './routes/plugins.$slug'
 
+const VerifyEmailRoute = VerifyEmailRouteImport.update({
+  id: '/verify-email',
+  path: '/verify-email',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SupportRoute = SupportRouteImport.update({
   id: '/support',
   path: '/support',
@@ -80,6 +86,7 @@ export interface FileRoutesByFullPath {
   '/docs': typeof DocsRoute
   '/pricing': typeof PricingRoute
   '/support': typeof SupportRoute
+  '/verify-email': typeof VerifyEmailRoute
   '/plugins/$slug': typeof PluginsSlugRoute
   '/plugins/': typeof PluginsIndexRoute
 }
@@ -92,6 +99,7 @@ export interface FileRoutesByTo {
   '/docs': typeof DocsRoute
   '/pricing': typeof PricingRoute
   '/support': typeof SupportRoute
+  '/verify-email': typeof VerifyEmailRoute
   '/plugins/$slug': typeof PluginsSlugRoute
   '/plugins': typeof PluginsIndexRoute
 }
@@ -105,6 +113,7 @@ export interface FileRoutesById {
   '/docs': typeof DocsRoute
   '/pricing': typeof PricingRoute
   '/support': typeof SupportRoute
+  '/verify-email': typeof VerifyEmailRoute
   '/plugins/$slug': typeof PluginsSlugRoute
   '/plugins/': typeof PluginsIndexRoute
 }
@@ -119,6 +128,7 @@ export interface FileRouteTypes {
     | '/docs'
     | '/pricing'
     | '/support'
+    | '/verify-email'
     | '/plugins/$slug'
     | '/plugins/'
   fileRoutesByTo: FileRoutesByTo
@@ -131,6 +141,7 @@ export interface FileRouteTypes {
     | '/docs'
     | '/pricing'
     | '/support'
+    | '/verify-email'
     | '/plugins/$slug'
     | '/plugins'
   id:
@@ -143,6 +154,7 @@ export interface FileRouteTypes {
     | '/docs'
     | '/pricing'
     | '/support'
+    | '/verify-email'
     | '/plugins/$slug'
     | '/plugins/'
   fileRoutesById: FileRoutesById
@@ -156,12 +168,20 @@ export interface RootRouteChildren {
   DocsRoute: typeof DocsRoute
   PricingRoute: typeof PricingRoute
   SupportRoute: typeof SupportRoute
+  VerifyEmailRoute: typeof VerifyEmailRoute
   PluginsSlugRoute: typeof PluginsSlugRoute
   PluginsIndexRoute: typeof PluginsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/verify-email': {
+      id: '/verify-email'
+      path: '/verify-email'
+      fullPath: '/verify-email'
+      preLoaderRoute: typeof VerifyEmailRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/support': {
       id: '/support'
       path: '/support'
@@ -244,19 +264,10 @@ const rootRouteChildren: RootRouteChildren = {
   DocsRoute: DocsRoute,
   PricingRoute: PricingRoute,
   SupportRoute: SupportRoute,
+  VerifyEmailRoute: VerifyEmailRoute,
   PluginsSlugRoute: PluginsSlugRoute,
   PluginsIndexRoute: PluginsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
