@@ -53,15 +53,21 @@ export const billingApi = {
   },
 
   listSubscriptions(options: { limit?: number; cursor?: string } = {}) {
-    return api.get<ListSubscriptionsResponse>("/api/v1/me/subscriptions", { searchParams: options });
+    return api.get<ListSubscriptionsResponse>("/api/v1/me/subscriptions", {
+      searchParams: options,
+    });
   },
   getSubscription(id: string) {
     return api.get<SubscriptionSummary>(`/api/v1/me/subscriptions/${encodeURIComponent(id)}`);
   },
   cancelSubscription(id: string) {
-    return api.post<SubscriptionSummary>(`/api/v1/me/subscriptions/${encodeURIComponent(id)}/cancel`);
+    return api.post<SubscriptionSummary>(
+      `/api/v1/me/subscriptions/${encodeURIComponent(id)}/cancel`,
+    );
   },
   resumeSubscription(id: string) {
-    return api.post<SubscriptionSummary>(`/api/v1/me/subscriptions/${encodeURIComponent(id)}/resume`);
+    return api.post<SubscriptionSummary>(
+      `/api/v1/me/subscriptions/${encodeURIComponent(id)}/resume`,
+    );
   },
 };
