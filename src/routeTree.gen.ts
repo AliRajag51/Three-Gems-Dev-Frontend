@@ -20,6 +20,8 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PluginsIndexRouteImport } from './routes/plugins.index'
 import { Route as PluginsSlugRouteImport } from './routes/plugins.$slug'
+import { Route as MeLicensesIndexRouteImport } from './routes/me.licenses.index'
+import { Route as MeLicensesIdRouteImport } from './routes/me.licenses.$id'
 
 const VerifyEmailRoute = VerifyEmailRouteImport.update({
   id: '/verify-email',
@@ -76,6 +78,16 @@ const PluginsSlugRoute = PluginsSlugRouteImport.update({
   path: '/plugins/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MeLicensesIndexRoute = MeLicensesIndexRouteImport.update({
+  id: '/me/licenses/',
+  path: '/me/licenses/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MeLicensesIdRoute = MeLicensesIdRouteImport.update({
+  id: '/me/licenses/$id',
+  path: '/me/licenses/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -89,6 +101,8 @@ export interface FileRoutesByFullPath {
   '/verify-email': typeof VerifyEmailRoute
   '/plugins/$slug': typeof PluginsSlugRoute
   '/plugins/': typeof PluginsIndexRoute
+  '/me/licenses/$id': typeof MeLicensesIdRoute
+  '/me/licenses/': typeof MeLicensesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -102,6 +116,8 @@ export interface FileRoutesByTo {
   '/verify-email': typeof VerifyEmailRoute
   '/plugins/$slug': typeof PluginsSlugRoute
   '/plugins': typeof PluginsIndexRoute
+  '/me/licenses/$id': typeof MeLicensesIdRoute
+  '/me/licenses': typeof MeLicensesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -116,6 +132,8 @@ export interface FileRoutesById {
   '/verify-email': typeof VerifyEmailRoute
   '/plugins/$slug': typeof PluginsSlugRoute
   '/plugins/': typeof PluginsIndexRoute
+  '/me/licenses/$id': typeof MeLicensesIdRoute
+  '/me/licenses/': typeof MeLicensesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -131,6 +149,8 @@ export interface FileRouteTypes {
     | '/verify-email'
     | '/plugins/$slug'
     | '/plugins/'
+    | '/me/licenses/$id'
+    | '/me/licenses/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -144,6 +164,8 @@ export interface FileRouteTypes {
     | '/verify-email'
     | '/plugins/$slug'
     | '/plugins'
+    | '/me/licenses/$id'
+    | '/me/licenses'
   id:
     | '__root__'
     | '/'
@@ -157,6 +179,8 @@ export interface FileRouteTypes {
     | '/verify-email'
     | '/plugins/$slug'
     | '/plugins/'
+    | '/me/licenses/$id'
+    | '/me/licenses/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -171,6 +195,8 @@ export interface RootRouteChildren {
   VerifyEmailRoute: typeof VerifyEmailRoute
   PluginsSlugRoute: typeof PluginsSlugRoute
   PluginsIndexRoute: typeof PluginsIndexRoute
+  MeLicensesIdRoute: typeof MeLicensesIdRoute
+  MeLicensesIndexRoute: typeof MeLicensesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -252,6 +278,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PluginsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/me/licenses/': {
+      id: '/me/licenses/'
+      path: '/me/licenses'
+      fullPath: '/me/licenses/'
+      preLoaderRoute: typeof MeLicensesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/me/licenses/$id': {
+      id: '/me/licenses/$id'
+      path: '/me/licenses/$id'
+      fullPath: '/me/licenses/$id'
+      preLoaderRoute: typeof MeLicensesIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -267,7 +307,19 @@ const rootRouteChildren: RootRouteChildren = {
   VerifyEmailRoute: VerifyEmailRoute,
   PluginsSlugRoute: PluginsSlugRoute,
   PluginsIndexRoute: PluginsIndexRoute,
+  MeLicensesIdRoute: MeLicensesIdRoute,
+  MeLicensesIndexRoute: MeLicensesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
