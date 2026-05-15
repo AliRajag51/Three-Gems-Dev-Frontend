@@ -2,6 +2,10 @@ import { Link } from "@tanstack/react-router";
 import { Gem, Menu, X } from "lucide-react";
 import { useState } from "react";
 
+import { useSession } from "@/hooks/use-session";
+import { UserMenu } from "@/components/user-menu";
+import { Skeleton } from "@/components/ui/skeleton";
+
 const nav = [
   { to: "/plugins", label: "Plugins" },
   { to: "/pricing", label: "Pricing" },
@@ -13,6 +17,8 @@ const nav = [
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
+  const { user, isAuthenticated, isLoading } = useSession();
+
   return (
     <header className="sticky top-0 z-40 backdrop-blur-md bg-background/80 border-b border-border">
       <div className="mx-auto max-w-7xl px-5 lg:px-8 h-16 flex items-center justify-between">
@@ -37,12 +43,18 @@ export function SiteHeader() {
         </nav>
 
         <div className="hidden lg:flex items-center gap-2">
-          <Link
-            to="/account"
-            className="px-4 py-2 text-sm font-medium text-foreground hover:text-primary transition-colors"
-          >
-            Sign in
-          </Link>
+          {isLoading ? (
+            <Skeleton className="h-9 w-28 rounded-xl" />
+          ) : isAuthenticated && user ? (
+            <UserMenu user={user} />
+          ) : (
+            <Link
+              to="/account"
+              className="px-4 py-2 text-sm font-medium text-foreground hover:text-primary transition-colors"
+            >
+              Sign in
+            </Link>
+          )}
           <Link to="/plugins" className="btn-ruby px-4 py-2 rounded-xl text-sm font-semibold">
             Browse Plugins
           </Link>
@@ -66,13 +78,30 @@ export function SiteHeader() {
                 {n.label}
               </Link>
             ))}
-            <Link
-              to="/account"
-              onClick={() => setOpen(false)}
-              className="py-2.5 text-sm font-medium"
-            >
-              Sign in
-            </Link>
+            {isLoading ? (
+              <Skeleton className="my-2 h-9 w-full rounded-xl" />
+            ) : isAuthenticated && user ? (
+              <>
+                <a
+                  href="/me/licenses"
+                  onClick={() => setOpen(false)}
+                  className="py-2.5 text-sm font-medium"
+                >
+                  My Licenses
+                </a>
+                <span className="py-2.5 text-xs text-muted-foreground truncate">
+                  Signed in as {user.email}
+                </span>
+              </>
+            ) : (
+              <Link
+                to="/account"
+                onClick={() => setOpen(false)}
+                className="py-2.5 text-sm font-medium"
+              >
+                Sign in
+              </Link>
+            )}
             <Link
               to="/plugins"
               onClick={() => setOpen(false)}
