@@ -47,8 +47,27 @@ export function useSession(): SessionState {
   };
 }
 
-/** Imperatively invalidate the session cache. Call after sign-in / sign-out. */
+/**
+ * Imperatively refresh the session cache. Call after sign-in / sign-out.
+ *
+ * Uses `refetchQueries` (NOT just `invalidateQueries`) so the returned
+ * promise resolves only after `/api/v1/me` has actually been re-fetched.
+ * Callers that `await` this can safely navigate immediately afterwards
+ * and the header / `<RequireAuth>` will see the new auth state on the
+ * very next render — no stale-`null` flash.
+ */
 export function useInvalidateSession() {
   const qc = useQueryClient();
-  return () => qc.invalidateQueries({ queryKey: SESSION_QUERY_KEY });
+  return () => qc.refetchQueries({ queryKey: SESSION_QUERY_KEY, exact: true });
+}
+
+/**
+ * Optimistic helper: drop a freshly-known user (or `null` on sign-out) into
+ * the session cache without a network round-trip. Use when an auth mutation
+ * already gave us the user payload — e.g. Better-Auth's sign-in returns
+ * `{ user, token }` so there's no reason to refetch `/api/v1/me`.
+ */
+export function useSetSessionUser() {
+  const qc = useQueryClient();
+  return (user: MePublic | null) => qc.setQueryData(SESSION_QUERY_KEY, user);
 }

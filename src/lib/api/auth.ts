@@ -11,9 +11,21 @@ import type { AuthResponse, MePublic } from "./types";
 const AUTH_BASE = "/api/v1/auth";
 
 export const authApi = {
-  /** POST /api/v1/auth/sign-up/email — creates account, sends verification email. */
-  signUp(input: { email: string; password: string; name: string }) {
-    return api.post<AuthResponse>(`${AUTH_BASE}/sign-up/email`, input);
+  /**
+   * POST /api/v1/auth/sign-up/email — creates account, sends verification email.
+   *
+   * Pass `callbackURL` to control where Better-Auth redirects after the user
+   * clicks the verification link in their inbox. We default to landing them
+   * back on the frontend's /account page with `?verified=1` so the route
+   * can show a "Email verified, please sign in" banner.
+   */
+  signUp(input: { email: string; password: string; name: string; callbackURL?: string }) {
+    const callbackURL =
+      input.callbackURL ??
+      (typeof window !== "undefined"
+        ? `${window.location.origin}/account?verified=1`
+        : "/account?verified=1");
+    return api.post<AuthResponse>(`${AUTH_BASE}/sign-up/email`, { ...input, callbackURL });
   },
 
   /** POST /api/v1/auth/sign-in/email — sets the session cookie on success. */

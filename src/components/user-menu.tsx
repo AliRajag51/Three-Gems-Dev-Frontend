@@ -16,7 +16,7 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { ChevronDown, KeyRound, Loader2, LogOut, User } from "lucide-react";
 
 import { authApi } from "@/lib/api/auth";
-import { useInvalidateSession } from "@/hooks/use-session";
+import { useSetSessionUser } from "@/hooks/use-session";
 import type { MePublic } from "@/lib/api/types";
 import { Button } from "@/components/ui/button";
 import {
@@ -34,12 +34,16 @@ interface UserMenuProps {
 
 export function UserMenu({ user }: UserMenuProps) {
   const navigate = useNavigate();
-  const invalidateSession = useInvalidateSession();
+  const setSessionUser = useSetSessionUser();
 
   const signOut = useMutation({
     mutationFn: () => authApi.signOut(),
-    onSettled: async () => {
-      await invalidateSession();
+    onSettled: () => {
+      // Flip the cache to anonymous immediately — no network round-trip.
+      // We use `onSettled` (not `onSuccess`) so even if the backend call
+      // errors we still treat the client as signed out; the server-side
+      // session cookie is best-effort cleared either way.
+      setSessionUser(null);
       navigate({ to: "/" });
     },
   });

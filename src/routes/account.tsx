@@ -19,7 +19,7 @@ import { Gem, Loader2, MailCheck, CheckCircle2 } from "lucide-react";
 
 import { authApi } from "@/lib/api/auth";
 import { ApiError } from "@/lib/api/client";
-import { useInvalidateSession } from "@/hooks/use-session";
+import { useSetSessionUser } from "@/hooks/use-session";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -130,13 +130,15 @@ function SignInForm({
   onSwitchMode: () => void;
 }) {
   const navigate = useNavigate();
-  const invalidateSession = useInvalidateSession();
+  const setSessionUser = useSetSessionUser();
 
   const mutation = useMutation({
     mutationFn: (values: { email: string; password: string }) => authApi.signIn(values),
-    onSuccess: async () => {
-      await invalidateSession();
-      // Allow internal paths only; otherwise fall back home.
+    onSuccess: (response) => {
+      // Better-Auth returns the freshly-authenticated user — seed it into the
+      // session cache so the header + RequireAuth flip to "logged in" on the
+      // next render, with zero network round-trip and zero stale-null flash.
+      setSessionUser(response.user);
       const target = redirectTo.startsWith("/") ? redirectTo : "/";
       navigate({ to: target });
     },
