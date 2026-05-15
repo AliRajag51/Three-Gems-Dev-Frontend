@@ -20,6 +20,8 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PluginsIndexRouteImport } from './routes/plugins.index'
 import { Route as PluginsSlugRouteImport } from './routes/plugins.$slug'
+import { Route as CheckoutSuccessRouteImport } from './routes/checkout.success'
+import { Route as CheckoutCancelRouteImport } from './routes/checkout.cancel'
 import { Route as MeLicensesIndexRouteImport } from './routes/me.licenses.index'
 import { Route as MeLicensesIdRouteImport } from './routes/me.licenses.$id'
 
@@ -78,6 +80,16 @@ const PluginsSlugRoute = PluginsSlugRouteImport.update({
   path: '/plugins/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CheckoutSuccessRoute = CheckoutSuccessRouteImport.update({
+  id: '/success',
+  path: '/success',
+  getParentRoute: () => CheckoutRoute,
+} as any)
+const CheckoutCancelRoute = CheckoutCancelRouteImport.update({
+  id: '/cancel',
+  path: '/cancel',
+  getParentRoute: () => CheckoutRoute,
+} as any)
 const MeLicensesIndexRoute = MeLicensesIndexRouteImport.update({
   id: '/me/licenses/',
   path: '/me/licenses/',
@@ -93,12 +105,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/account': typeof AccountRoute
-  '/checkout': typeof CheckoutRoute
+  '/checkout': typeof CheckoutRouteWithChildren
   '/contact': typeof ContactRoute
   '/docs': typeof DocsRoute
   '/pricing': typeof PricingRoute
   '/support': typeof SupportRoute
   '/verify-email': typeof VerifyEmailRoute
+  '/checkout/cancel': typeof CheckoutCancelRoute
+  '/checkout/success': typeof CheckoutSuccessRoute
   '/plugins/$slug': typeof PluginsSlugRoute
   '/plugins/': typeof PluginsIndexRoute
   '/me/licenses/$id': typeof MeLicensesIdRoute
@@ -108,12 +122,14 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/account': typeof AccountRoute
-  '/checkout': typeof CheckoutRoute
+  '/checkout': typeof CheckoutRouteWithChildren
   '/contact': typeof ContactRoute
   '/docs': typeof DocsRoute
   '/pricing': typeof PricingRoute
   '/support': typeof SupportRoute
   '/verify-email': typeof VerifyEmailRoute
+  '/checkout/cancel': typeof CheckoutCancelRoute
+  '/checkout/success': typeof CheckoutSuccessRoute
   '/plugins/$slug': typeof PluginsSlugRoute
   '/plugins': typeof PluginsIndexRoute
   '/me/licenses/$id': typeof MeLicensesIdRoute
@@ -124,12 +140,14 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/account': typeof AccountRoute
-  '/checkout': typeof CheckoutRoute
+  '/checkout': typeof CheckoutRouteWithChildren
   '/contact': typeof ContactRoute
   '/docs': typeof DocsRoute
   '/pricing': typeof PricingRoute
   '/support': typeof SupportRoute
   '/verify-email': typeof VerifyEmailRoute
+  '/checkout/cancel': typeof CheckoutCancelRoute
+  '/checkout/success': typeof CheckoutSuccessRoute
   '/plugins/$slug': typeof PluginsSlugRoute
   '/plugins/': typeof PluginsIndexRoute
   '/me/licenses/$id': typeof MeLicensesIdRoute
@@ -147,6 +165,8 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/support'
     | '/verify-email'
+    | '/checkout/cancel'
+    | '/checkout/success'
     | '/plugins/$slug'
     | '/plugins/'
     | '/me/licenses/$id'
@@ -162,6 +182,8 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/support'
     | '/verify-email'
+    | '/checkout/cancel'
+    | '/checkout/success'
     | '/plugins/$slug'
     | '/plugins'
     | '/me/licenses/$id'
@@ -177,6 +199,8 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/support'
     | '/verify-email'
+    | '/checkout/cancel'
+    | '/checkout/success'
     | '/plugins/$slug'
     | '/plugins/'
     | '/me/licenses/$id'
@@ -187,7 +211,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   AccountRoute: typeof AccountRoute
-  CheckoutRoute: typeof CheckoutRoute
+  CheckoutRoute: typeof CheckoutRouteWithChildren
   ContactRoute: typeof ContactRoute
   DocsRoute: typeof DocsRoute
   PricingRoute: typeof PricingRoute
@@ -278,6 +302,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PluginsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/checkout/success': {
+      id: '/checkout/success'
+      path: '/success'
+      fullPath: '/checkout/success'
+      preLoaderRoute: typeof CheckoutSuccessRouteImport
+      parentRoute: typeof CheckoutRoute
+    }
+    '/checkout/cancel': {
+      id: '/checkout/cancel'
+      path: '/cancel'
+      fullPath: '/checkout/cancel'
+      preLoaderRoute: typeof CheckoutCancelRouteImport
+      parentRoute: typeof CheckoutRoute
+    }
     '/me/licenses/': {
       id: '/me/licenses/'
       path: '/me/licenses'
@@ -295,11 +333,25 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface CheckoutRouteChildren {
+  CheckoutCancelRoute: typeof CheckoutCancelRoute
+  CheckoutSuccessRoute: typeof CheckoutSuccessRoute
+}
+
+const CheckoutRouteChildren: CheckoutRouteChildren = {
+  CheckoutCancelRoute: CheckoutCancelRoute,
+  CheckoutSuccessRoute: CheckoutSuccessRoute,
+}
+
+const CheckoutRouteWithChildren = CheckoutRoute._addFileChildren(
+  CheckoutRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   AccountRoute: AccountRoute,
-  CheckoutRoute: CheckoutRoute,
+  CheckoutRoute: CheckoutRouteWithChildren,
   ContactRoute: ContactRoute,
   DocsRoute: DocsRoute,
   PricingRoute: PricingRoute,
@@ -313,13 +365,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
