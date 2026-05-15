@@ -1,8 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { plugins } from "@/data/plugins";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { PluginCard } from "@/components/plugin-card";
-import { useMemo, useState } from "react";
-import { Search } from "lucide-react";
+import { catalogApi } from "@/lib/api/catalog";
+
+const pluginsQueryOptions = {
+  queryKey: ["plugins", "list"] as const,
+  queryFn: () => catalogApi.listPlugins({ limit: 50 }),
+};
 
 export const Route = createFileRoute("/plugins/")({
   head: () => ({
@@ -14,19 +18,14 @@ export const Route = createFileRoute("/plugins/")({
       },
     ],
   }),
+  loader: ({ context: { queryClient } }) => queryClient.ensureQueryData(pluginsQueryOptions),
+  pendingComponent: PluginsPending,
+  errorComponent: PluginsError,
   component: PluginsPage,
 });
 
 function PluginsPage() {
-  const cats = useMemo(() => ["All", ...Array.from(new Set(plugins.map((p) => p.category)))], []);
-  const [cat, setCat] = useState("All");
-  const [q, setQ] = useState("");
-
-  const filtered = plugins.filter(
-    (p) =>
-      (cat === "All" || p.category === cat) &&
-      (q === "" || p.name.toLowerCase().includes(q.toLowerCase())),
-  );
+  const { data } = useSuspenseQuery(pluginsQueryOptions);
 
   return (
     <div>
@@ -42,43 +41,46 @@ function PluginsPage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-5 lg:px-8 py-10">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-          <div className="flex flex-wrap gap-2">
-            {cats.map((c) => (
-              <button
-                key={c}
-                onClick={() => setCat(c)}
-                className={`px-4 py-2 rounded-full text-sm font-semibold border transition-colors ${
-                  cat === c
-                    ? "bg-primary text-primary-foreground border-primary"
-                    : "bg-surface border-border hover:border-primary/40"
-                }`}
-              >
-                {c}
-              </button>
+      <section className="mx-auto max-w-7xl px-5 lg:px-8 py-20">
+        {data.items.length === 0 ? (
+          <div className="card-surface p-12 text-center">
+            <h2 className="font-display text-2xl font-bold">No plugins published yet</h2>
+            <p className="mt-3 text-muted-foreground">Check back soon — we're shipping fast.</p>
+          </div>
+        ) : (
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {data.items.map((p) => (
+              <PluginCard key={p.id} p={p} />
             ))}
           </div>
-          <div className="relative lg:w-72">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <input
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
-              placeholder="Search plugins..."
-              className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-border bg-surface text-sm focus:outline-none focus:border-primary"
-            />
-          </div>
-        </div>
-
-        <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((p) => (
-            <PluginCard key={p.slug} p={p} />
-          ))}
-        </div>
-        {filtered.length === 0 && (
-          <p className="text-center py-20 text-muted-foreground">No plugins match your search.</p>
         )}
       </section>
+    </div>
+  );
+}
+
+function PluginsPending() {
+  return (
+    <div className="mx-auto max-w-7xl px-5 lg:px-8 py-20">
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {[0, 1, 2, 3, 4, 5].map((i) => (
+          <div key={i} className="card-surface p-6 animate-pulse">
+            <div className="w-12 h-12 rounded-xl bg-primary-soft" />
+            <div className="mt-5 h-5 w-2/3 rounded bg-border" />
+            <div className="mt-3 h-4 w-full rounded bg-border" />
+            <div className="mt-2 h-4 w-5/6 rounded bg-border" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function PluginsError({ error }: { error: Error }) {
+  return (
+    <div className="mx-auto max-w-3xl px-5 py-24 text-center">
+      <h1 className="font-display text-3xl font-bold">Couldn't load plugins</h1>
+      <p className="mt-3 text-muted-foreground">{error.message}</p>
     </div>
   );
 }
