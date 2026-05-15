@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import {
   ShieldCheck,
   Zap,
@@ -9,9 +10,14 @@ import {
   ArrowRight,
   Check,
 } from "lucide-react";
-import { plugins } from "@/data/plugins";
 import { PluginCard } from "@/components/plugin-card";
 import { DashboardMockup } from "@/components/dashboard-mockup";
+import { catalogApi } from "@/lib/api/catalog";
+
+const featuredPluginsQueryOptions = {
+  queryKey: ["plugins", "list"] as const,
+  queryFn: () => catalogApi.listPlugins({ limit: 50 }),
+};
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -24,6 +30,8 @@ export const Route = createFileRoute("/")({
       },
     ],
   }),
+  loader: ({ context: { queryClient } }) =>
+    queryClient.ensureQueryData(featuredPluginsQueryOptions),
   component: HomePage,
 });
 
@@ -61,6 +69,8 @@ const features = [
 ];
 
 function HomePage() {
+  const { data } = useSuspenseQuery(featuredPluginsQueryOptions);
+  const featured = data.items.slice(0, 3);
   return (
     <div>
       {/* Hero */}
@@ -176,11 +186,15 @@ function HomePage() {
             See all plugins <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
-        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {plugins.map((p) => (
-            <PluginCard key={p.slug} p={p} />
-          ))}
-        </div>
+        {featured.length === 0 ? (
+          <p className="mt-10 text-muted-foreground">No plugins published yet — check back soon.</p>
+        ) : (
+          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {featured.map((p) => (
+              <PluginCard key={p.id} p={p} />
+            ))}
+          </div>
+        )}
       </section>
 
       {/* CTA */}
