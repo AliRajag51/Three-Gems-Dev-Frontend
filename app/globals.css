@@ -1,0 +1,214 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-display: var(--font-jakarta), "Plus Jakarta Sans", "Inter", system-ui, sans-serif;
+  --font-sans: var(--font-inter), "Inter", system-ui, sans-serif;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-soft: var(--primary-soft);
+  --color-primary-deep: var(--primary-deep);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-surface: var(--surface);
+  --shadow-soft: var(--shadow-soft);
+  --shadow-elevated: var(--shadow-elevated);
+}
+
+:root {
+  --radius: 14px;
+
+  /* Brand */
+  --primary: oklch(0.586 0.181 18.5);
+  --primary-foreground: oklch(0.99 0 0);
+  --primary-soft: oklch(0.97 0.022 17);
+  --primary-deep: oklch(0.336 0.107 16);
+
+  /* Surfaces */
+  --background: oklch(0.974 0.003 247);
+  --surface: oklch(1 0 0);
+  --foreground: oklch(0.27 0.03 257);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.27 0.03 257);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.27 0.03 257);
+
+  --secondary: oklch(0.97 0.022 17);
+  --secondary-foreground: oklch(0.336 0.107 16);
+  --muted: oklch(0.965 0.005 247);
+  --muted-foreground: oklch(0.56 0.024 256);
+  --accent: oklch(0.97 0.022 17);
+  --accent-foreground: oklch(0.336 0.107 16);
+
+  --destructive: oklch(0.62 0.22 25);
+  --destructive-foreground: oklch(0.99 0 0);
+  --success: oklch(0.65 0.15 155);
+
+  --border: oklch(0.93 0.005 256);
+  --input: oklch(0.93 0.005 256);
+  --ring: oklch(0.586 0.181 18.5);
+
+  --shadow-soft: 0 8px 24px rgba(16, 24, 40, 0.06);
+  --shadow-elevated: 0 20px 48px -12px rgba(201, 58, 74, 0.18);
+
+  --gradient-ruby: linear-gradient(135deg, #c93a4a 0%, #8e2334 100%);
+  --gradient-ruby-soft: linear-gradient(135deg, #fff0f3 0%, #ffffff 100%);
+  --gradient-hero:
+    radial-gradient(1200px 600px at 80% -10%, rgba(201, 58, 74, 0.1), transparent 60%),
+    radial-gradient(800px 500px at 0% 20%, rgba(90, 31, 44, 0.06), transparent 60%);
+}
+
+.dark {
+  --background: oklch(0.18 0.02 280);
+  --foreground: oklch(0.98 0 0);
+  --card: oklch(0.22 0.02 280);
+  --card-foreground: oklch(0.98 0 0);
+  --surface: oklch(0.22 0.02 280);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 12%);
+  --muted: oklch(0.26 0.02 280);
+  --muted-foreground: oklch(0.7 0.02 256);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+  html {
+    font-family: var(--font-sans);
+  }
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
+}
+
+@layer components {
+  .btn-ruby {
+    background-image: var(--gradient-ruby);
+    color: white;
+    box-shadow: 0 6px 16px -4px rgba(201, 58, 74, 0.45);
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease,
+      filter 0.2s ease;
+  }
+  .btn-ruby:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.05);
+    box-shadow: 0 10px 24px -4px rgba(201, 58, 74, 0.55);
+  }
+
+  .card-surface {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.25rem 0.625rem;
+    border-radius: 999px;
+    background: var(--primary-soft);
+    color: var(--primary-deep);
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .hero-bg {
+    background-image: var(--gradient-hero);
+  }
+
+  .font-display {
+    font-family: var(--font-display);
+  }
+
+  /* Subtle dotted texture to stop large areas feeling empty. */
+  .bg-dot-grid {
+    background-image: radial-gradient(rgba(201, 58, 74, 0.14) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+
+  /* Faint engineering grid for surfaces. */
+  .bg-grid-lines {
+    background-image:
+      linear-gradient(to right, rgba(16, 24, 40, 0.035) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(16, 24, 40, 0.035) 1px, transparent 1px);
+    background-size: 44px 44px;
+  }
+
+  /* Gradient icon chip that lights up to full ruby on hover (within a .group). */
+  .icon-tile {
+    background-image: linear-gradient(135deg, #fff0f3 0%, #ffe1e7 100%);
+    color: var(--primary);
+    transition:
+      transform 0.3s ease,
+      box-shadow 0.3s ease,
+      background-image 0.3s ease,
+      color 0.3s ease;
+  }
+  .group:hover .icon-tile {
+    background-image: var(--gradient-ruby);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px -6px rgba(201, 58, 74, 0.5);
+  }
+}
+
+@keyframes tg-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+.animate-float {
+  animation: tg-float 7s ease-in-out infinite;
+}
+.animate-float-slow {
+  animation: tg-float 11s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-float,
+  .animate-float-slow {
+    animation: none;
+  }
+}
