@@ -83,7 +83,7 @@ export function DetailsTab({ form, onChange }: { form: DetailsForm; onChange: (f
       </div>
       <div>
         <label className="text-sm font-semibold">Description</label>
-        <textarea value={form.description} onChange={(e) => onChange({ ...form, description: e.target.value })} rows={4} className="mt-1.5 w-full px-4 py-2.5 rounded-xl border border-border bg-background text-sm focus:outline-none focus:border-primary resize-none" />
+        <textarea value={form.description} onChange={(e) => onChange({ ...form, description: e.target.value })} rows={5} className="mt-1.5 w-full px-4 py-2.5 rounded-xl border border-border bg-background text-sm focus:outline-none focus:border-primary resize-y" />
       </div>
       <div>
         <label className="text-sm font-semibold">YouTube video URL</label>
