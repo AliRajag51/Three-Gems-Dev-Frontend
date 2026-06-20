@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Gem, LayoutDashboard, Package, Plus, ChevronDown, ChevronRight, LogOut, Tag, LifeBuoy, Mail, Menu, X } from "lucide-react";
+import { Gem, LayoutDashboard, Package, Plus, ChevronDown, ChevronRight, LogOut, Tag, LifeBuoy, Mail, Users, Menu, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/context/auth.context";
 import { useLogout } from "@/lib/hooks/auth.hooks";
@@ -21,6 +21,11 @@ const navItems = [
       { label: "All Plugins", href: "/admin/plugins" },
       { label: "Add New", href: "/admin/plugins/new", icon: Plus },
     ],
+  },
+  {
+    label: "Customers",
+    href: "/admin/customers",
+    icon: Users,
   },
   {
     label: "Discounts",

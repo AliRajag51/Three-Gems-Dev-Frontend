@@ -826,3 +826,4 @@ function FAQ({ q, a }: { q: string; a: string }) {
     </button>
   );
 }
+//its me akif

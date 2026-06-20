@@ -20,6 +20,62 @@ export const searchUsers = async (q: string): Promise<AdminUserLite[]> => {
   return res.data.data;
 };
 
+// ── Managed customers (admin-provisioned: no PayPal, no email) ────────────────────
+
+export type GrantedLicense = {
+  id: string;
+  licenseKey: string;
+  status: string;
+  siteLimit: number;
+  expiresAt: string | null;
+};
+
+export type ManagedCustomer = {
+  id: string;
+  name: string;
+  email: string;
+  createdAt: string;
+  licenses: {
+    id: string;
+    licenseKey: string;
+    status: string;
+    expiresAt: string | null;
+    plugin: { name: string; slug: string };
+    plan: { name: string };
+  }[];
+};
+
+export type ProvisionResult = {
+  user: { id: string; name: string; email: string; suppressEmails: boolean; createdAt: string };
+  license: GrantedLicense;
+};
+
+// Admin-provisioned accounts (suppressEmails) with their licenses.
+export const getManagedCustomers = async (): Promise<ManagedCustomer[]> => {
+  const res = await api.get("/admin/customers");
+  return res.data.data;
+};
+
+// Create a customer (email + password, no OTP/email) AND grant a plugin license in one call.
+export const provisionCustomer = async (data: {
+  name: string;
+  email: string;
+  password: string;
+  planId: string;
+}): Promise<ProvisionResult> => {
+  const res = await api.post("/admin/customers/provision", data);
+  return res.data.data;
+};
+
+// Grant a plugin license to an EXISTING user (no PayPal/email).
+export const grantLicense = async (data: {
+  userId: string;
+  planId: string;
+}): Promise<{ license: GrantedLicense }> => {
+  const res = await api.post("/admin/licenses/grant", data);
+  return res.data.data;
+};
+
 export type AdminNotificationCount = {
   supportOpen: number;       // support tickets still OPEN (unsolved)
   contactUnreplied: number;  // contact messages not yet REPLIED

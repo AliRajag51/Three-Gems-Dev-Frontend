@@ -4,6 +4,7 @@ import {
   createPlugin, updatePlugin, deletePlugin,
   getCustomerCount, getAdminNotificationCount,
   getCountryAnalytics, getPluginCountryAnalytics,
+  getManagedCustomers, provisionCustomer,
 } from "@/lib/services/admin.service";
 
 export function useCountryAnalytics() {
@@ -90,5 +91,25 @@ export function useTogglePluginStatus() {
   return useMutation({
     mutationFn: ({ id, isActive }: { id: string; isActive: boolean }) => updatePlugin(id, { isActive }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-plugins"] }),
+  });
+}
+
+// ── Managed customers (admin-provisioned, no PayPal/email) ───────────────────────
+
+export function useManagedCustomers() {
+  return useQuery({
+    queryKey: ["admin-customers"],
+    queryFn: getManagedCustomers,
+  });
+}
+
+export function useProvisionCustomer() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: provisionCustomer,
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["admin-customers"] });
+      qc.invalidateQueries({ queryKey: ["admin-customer-count"] });
+    },
   });
 }
