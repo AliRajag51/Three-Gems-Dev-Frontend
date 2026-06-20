@@ -4,7 +4,7 @@ import {
   createPlugin, updatePlugin, deletePlugin,
   getCustomerCount, getAdminNotificationCount,
   getCountryAnalytics, getPluginCountryAnalytics,
-  getManagedCustomers, provisionCustomer,
+  getManagedCustomers, provisionCustomer, setCustomerEmails, grantLicense,
 } from "@/lib/services/admin.service";
 
 export function useCountryAnalytics() {
@@ -111,5 +111,22 @@ export function useProvisionCustomer() {
       qc.invalidateQueries({ queryKey: ["admin-customers"] });
       qc.invalidateQueries({ queryKey: ["admin-customer-count"] });
     },
+  });
+}
+
+export function useSetCustomerEmails() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, suppressEmails }: { id: string; suppressEmails: boolean }) =>
+      setCustomerEmails(id, suppressEmails),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-customers"] }),
+  });
+}
+
+export function useGrantLicense() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: grantLicense,
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-customers"] }),
   });
 }

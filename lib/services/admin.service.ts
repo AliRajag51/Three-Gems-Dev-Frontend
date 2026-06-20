@@ -76,6 +76,15 @@ export const grantLicense = async (data: {
   return res.data.data;
 };
 
+// Turn email delivery for a managed account on/off (false = receives emails like a normal customer).
+export const setCustomerEmails = async (
+  id: string,
+  suppressEmails: boolean,
+): Promise<{ id: string; email: string; suppressEmails: boolean }> => {
+  const res = await api.patch(`/admin/customers/${id}`, { suppressEmails });
+  return res.data.data;
+};
+
 export type AdminNotificationCount = {
   supportOpen: number;       // support tickets still OPEN (unsolved)
   contactUnreplied: number;  // contact messages not yet REPLIED

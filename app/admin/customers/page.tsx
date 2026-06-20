@@ -1,12 +1,14 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Loader2, UserPlus, Check, Copy, KeyRound, Users } from "lucide-react";
+import { Loader2, UserPlus, Check, Copy, KeyRound, Users, Mail, Plus } from "lucide-react";
 import {
   useAdminPlugins,
   useAdminPlugin,
   useManagedCustomers,
   useProvisionCustomer,
+  useSetCustomerEmails,
+  useGrantLicense,
 } from "@/lib/hooks/admin.hooks";
 import type { Plan } from "@/lib/types/admin";
 
@@ -28,15 +30,34 @@ export default function AdminCustomersPage() {
   const { data: plugins = [] } = useAdminPlugins();
   const { data: customers = [], isLoading: customersLoading } = useManagedCustomers();
   const provision = useProvisionCustomer();
+  const setEmails = useSetCustomerEmails();
+  const grant = useGrantLicense();
 
   const [form, setForm] = useState({ name: "", email: "", password: "", pluginId: "", planId: "" });
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<{ email: string; licenseKey: string } | null>(null);
   const [copied, setCopied] = useState(false);
+  const [enabledMsg, setEnabledMsg] = useState<string | null>(null);
+
+  // "Add plugin to an existing customer" — one inline grant form open at a time.
+  const [grantFor, setGrantFor] = useState<string | null>(null);
+  const [grantForm, setGrantForm] = useState({ pluginId: "", planId: "" });
+  const [grantMsg, setGrantMsg] = useState<string | null>(null);
 
   // The full plugin fetch includes its plans; only fires once a plugin is picked.
   const { data: plugin, isFetching: plansLoading } = useAdminPlugin(form.pluginId);
   const plans = useMemo(() => (plugin?.plans ?? []).filter((p) => p.isActive), [plugin]);
+
+  // Plans for the per-row "add plugin" grant form (its own plugin selection).
+  const { data: grantPlugin, isFetching: grantPlansLoading } = useAdminPlugin(grantForm.pluginId);
+  const grantPlans = useMemo(() => (grantPlugin?.plans ?? []).filter((p) => p.isActive), [grantPlugin]);
+
+  const openGrant = (id: string) => {
+    grant.reset();
+    setGrantFor(grantFor === id ? null : id);
+    setGrantForm({ pluginId: "", planId: "" });
+    setGrantMsg(null);
+  };
 
   const canSubmit =
     !!form.name.trim() && !!form.email.trim() && form.password.length >= 6 && !!form.planId && !provision.isPending;
@@ -212,6 +233,16 @@ export default function AdminCustomersPage() {
             </span>
             <p className="text-sm font-semibold">Managed customers</p>
           </div>
+          {enabledMsg && (
+            <div className="mb-3 rounded-lg border border-green-500/30 bg-green-500/5 px-3 py-2 text-xs text-green-700">
+              {enabledMsg}
+            </div>
+          )}
+          {grantMsg && (
+            <div className="mb-3 rounded-lg border border-green-500/30 bg-green-500/5 px-3 py-2 text-xs text-green-700">
+              {grantMsg}
+            </div>
+          )}
           {customersLoading ? (
             <div className="flex justify-center py-6">
               <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
@@ -221,24 +252,129 @@ export default function AdminCustomersPage() {
           ) : (
             <div className="flex flex-col divide-y divide-border">
               {customers.map((c) => (
-                <div key={c.id} className="py-3 flex items-start justify-between gap-4">
-                  <div className="min-w-0">
-                    <p className="text-sm font-medium truncate">{c.name}</p>
-                    <p className="text-xs text-muted-foreground truncate">{c.email}</p>
+                <div key={c.id} className="py-3">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium truncate">{c.name}</p>
+                      <p className="text-xs text-muted-foreground truncate">{c.email}</p>
+                      <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1">
+                        <button
+                          onClick={() =>
+                            setEmails.mutate(
+                              { id: c.id, suppressEmails: false },
+                              {
+                                onSuccess: () =>
+                                  setEnabledMsg(
+                                    `Emails enabled for ${c.email}. They now receive emails like a normal customer and have left this list.`,
+                                  ),
+                              },
+                            )
+                          }
+                          disabled={setEmails.isPending}
+                          title="Turn email delivery on for this account (it becomes a normal customer)"
+                          className="inline-flex items-center gap-1 text-[11px] font-medium text-primary hover:underline disabled:opacity-50"
+                        >
+                          {setEmails.isPending && setEmails.variables?.id === c.id ? (
+                            <Loader2 className="w-3 h-3 animate-spin" />
+                          ) : (
+                            <Mail className="w-3 h-3" />
+                          )}
+                          Emails off · Allow emails
+                        </button>
+                        <button
+                          onClick={() => openGrant(c.id)}
+                          title="Grant another plugin to this customer"
+                          className="inline-flex items-center gap-1 text-[11px] font-medium text-primary hover:underline"
+                        >
+                          <Plus className="w-3 h-3" />
+                          Add plugin
+                        </button>
+                      </div>
+                    </div>
+                    <div className="flex flex-col items-end gap-1 shrink-0">
+                      {c.licenses.length === 0 ? (
+                        <span className="text-xs text-muted-foreground">No license</span>
+                      ) : (
+                        c.licenses.map((l) => (
+                          <span key={l.id} className="inline-flex items-center gap-1.5 text-xs">
+                            <KeyRound className="w-3 h-3 text-primary shrink-0" />
+                            <span className="font-medium">{l.plugin.name}</span>
+                            <span className="text-muted-foreground">· {l.plan.name}</span>
+                            <code className="font-mono text-[11px] text-muted-foreground">{l.licenseKey}</code>
+                          </span>
+                        ))
+                      )}
+                    </div>
                   </div>
-                  <div className="flex flex-col items-end gap-1 shrink-0">
-                    {c.licenses.length === 0 ? (
-                      <span className="text-xs text-muted-foreground">No license</span>
-                    ) : (
-                      c.licenses.map((l) => (
-                        <span key={l.id} className="inline-flex items-center gap-1.5 text-xs">
-                          <KeyRound className="w-3 h-3 text-primary shrink-0" />
-                          <span className="font-medium">{l.plugin.name}</span>
-                          <code className="font-mono text-[11px] text-muted-foreground">{l.licenseKey}</code>
-                        </span>
-                      ))
-                    )}
-                  </div>
+
+                  {/* Inline "add another plugin" grant form for this customer */}
+                  {grantFor === c.id && (
+                    <div className="mt-3 rounded-lg border border-border bg-muted/30 p-3">
+                      <div className="grid sm:grid-cols-2 gap-2">
+                        <select
+                          value={grantForm.pluginId}
+                          onChange={(e) => setGrantForm({ pluginId: e.target.value, planId: "" })}
+                          className={inp}
+                        >
+                          <option value="">Select a plugin…</option>
+                          {plugins.map((p) => (
+                            <option key={p.id} value={p.id}>
+                              {p.name}
+                            </option>
+                          ))}
+                        </select>
+                        <select
+                          value={grantForm.planId}
+                          onChange={(e) => setGrantForm({ ...grantForm, planId: e.target.value })}
+                          disabled={!grantForm.pluginId || grantPlansLoading}
+                          className={inp}
+                        >
+                          <option value="">
+                            {!grantForm.pluginId
+                              ? "Select a plugin first"
+                              : grantPlansLoading
+                                ? "Loading plans…"
+                                : "Select a plan…"}
+                          </option>
+                          {grantPlans.map((p) => (
+                            <option key={p.id} value={p.id}>
+                              {planLabel(p)}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      {grant.isError && (
+                        <p className="mt-2 text-xs text-destructive">Failed to grant — please try again.</p>
+                      )}
+                      <div className="mt-2 flex items-center gap-2">
+                        <button
+                          onClick={() =>
+                            grant.mutate(
+                              { userId: c.id, planId: grantForm.planId },
+                              {
+                                onSuccess: () => {
+                                  setGrantMsg(`Plugin granted to ${c.email}.`);
+                                  setGrantFor(null);
+                                  setGrantForm({ pluginId: "", planId: "" });
+                                },
+                              },
+                            )
+                          }
+                          disabled={!grantForm.planId || grant.isPending}
+                          className="btn-ruby px-3 py-1.5 rounded-lg text-xs font-semibold disabled:opacity-50 inline-flex items-center gap-1.5"
+                        >
+                          {grant.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
+                          Grant
+                        </button>
+                        <button
+                          onClick={() => setGrantFor(null)}
+                          className="px-3 py-1.5 rounded-lg text-xs border border-border hover:bg-muted transition-colors"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
