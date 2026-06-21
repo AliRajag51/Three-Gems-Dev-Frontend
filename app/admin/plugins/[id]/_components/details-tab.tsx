@@ -1,7 +1,8 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { Upload, Image, Loader2, Play } from "lucide-react";
+import { Upload, Image, Loader2, Play, Bold } from "lucide-react";
+import { renderRichText } from "@/lib/rich-text";
 import * as adminService from "@/lib/services/admin.service";
 import { EmailPicker } from "@/components/admin/email-picker";
 import { youtubeId } from "@/lib/youtube";
@@ -22,6 +23,22 @@ export function DetailsTab({ form, onChange }: { form: DetailsForm; onChange: (f
   const [iconUploading, setIconUploading] = useState(false);
   const [iconError, setIconError] = useState<string | null>(null);
   const iconRef = useRef<HTMLInputElement>(null);
+  const descRef = useRef<HTMLTextAreaElement>(null);
+
+  // Wrap the current description selection in **…** (markdown bold). The storefront renders it bold.
+  const wrapDescriptionBold = () => {
+    const el = descRef.current;
+    if (!el) return;
+    const { selectionStart: s, selectionEnd: e, value } = el;
+    if (s === e) return; // nothing selected → no-op
+    const next = value.slice(0, s) + "**" + value.slice(s, e) + "**" + value.slice(e);
+    onChange({ ...form, description: next });
+    // Re-select the same text (now shifted by the leading "**") after the value updates.
+    requestAnimationFrame(() => {
+      el.focus();
+      el.setSelectionRange(s + 2, e + 2);
+    });
+  };
 
   // Parsed once per render so we can preview the video link as the admin types/pastes it.
   const videoId = youtubeId(form.videoUrl);
@@ -82,8 +99,33 @@ export function DetailsTab({ form, onChange }: { form: DetailsForm; onChange: (f
         </p>
       </div>
       <div>
-        <label className="text-sm font-semibold">Description</label>
-        <textarea value={form.description} onChange={(e) => onChange({ ...form, description: e.target.value })} rows={5} className="mt-1.5 w-full px-4 py-2.5 rounded-xl border border-border bg-background text-sm focus:outline-none focus:border-primary resize-y" />
+        <div className="flex items-center justify-between">
+          <label className="text-sm font-semibold">Description</label>
+          <button
+            type="button"
+            onClick={wrapDescriptionBold}
+            title="Select some text, then click to make it bold"
+            className="inline-flex items-center gap-1 px-2 py-1 rounded-lg border border-border text-xs font-semibold text-muted-foreground hover:text-foreground hover:border-primary/40 transition-colors"
+          >
+            <Bold className="w-3.5 h-3.5" /> Bold
+          </button>
+        </div>
+        <textarea
+          ref={descRef}
+          value={form.description}
+          onChange={(e) => onChange({ ...form, description: e.target.value })}
+          rows={8}
+          className="mt-1.5 w-full px-4 py-2.5 rounded-xl border border-border bg-background text-sm focus:outline-none focus:border-primary resize-y"
+        />
+        <p className="mt-1 text-[11px] text-muted-foreground">
+          Tip: select text and click <strong>Bold</strong> (or wrap it in **double asterisks**). Line breaks are kept.
+        </p>
+        {form.description.trim() && (
+          <div className="mt-2 rounded-xl border border-border bg-muted/30 p-3">
+            <p className="mb-1 text-[11px] font-semibold text-muted-foreground">Preview</p>
+            <div className="text-sm text-foreground/90">{renderRichText(form.description)}</div>
+          </div>
+        )}
       </div>
       <div>
         <label className="text-sm font-semibold">YouTube video URL</label>

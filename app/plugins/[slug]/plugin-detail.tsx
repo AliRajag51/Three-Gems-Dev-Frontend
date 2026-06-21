@@ -11,6 +11,7 @@ import {
   KeyRound, Copy, CheckCheck, X, ChevronLeft, ChevronRight, Maximize2, Eye, EyeOff, AlertTriangle,
 } from "lucide-react";
 import type { Screenshot } from "@/lib/types/plugin";
+import { renderRichText } from "@/lib/rich-text";
 import { usePlugin } from "@/lib/hooks/plugin.hooks";
 import { useMyLicenses } from "@/lib/hooks/license.hooks";
 import { useMySubscriptions } from "@/lib/hooks/subscription.hooks";
@@ -206,7 +207,7 @@ export function PluginDetail({ slug }: { slug: string }) {
             )}
             <div>
               <h1 className="font-display text-3xl sm:text-4xl font-bold tracking-tight leading-tight">{plugin.name}</h1>
-              <p className="mt-1.5 text-base text-muted-foreground">{plugin.description}</p>
+              <p className="mt-1.5 text-base text-muted-foreground">{renderRichText(plugin.description)}</p>
               <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-muted-foreground">
                 <span className="font-mono font-semibold text-foreground">v{plugin.version}</span>
                 {plugin.changelogs[0]?.releaseDate && (
