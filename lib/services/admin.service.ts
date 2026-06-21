@@ -14,6 +14,46 @@ export const getCustomerCount = async (): Promise<number> => {
 
 export type AdminUserLite = { id: string; name: string; email: string };
 
+// ── Users (everyone who owns a plugin) — paginated 20/page ───────────────────────
+
+export type AdminUserEntitlement = {
+  id: string;
+  status: string;
+  expiresAt: string | null;
+  licenseKey: string;
+  plugin: { name: string; slug: string };
+  plan: { name: string; billingType: "ONCE" | "RECURRING" };
+  subscription: { status: string; currentPeriodEnd: string; cancelAtPeriodEnd: boolean } | null;
+};
+
+export type AdminUserRow = {
+  id: string;
+  name: string;
+  email: string;
+  isAdmin: boolean;
+  suppressEmails: boolean;
+  createdAt: string;
+  licenses: AdminUserEntitlement[];
+};
+
+export type AdminUsersPage = { users: AdminUserRow[]; total: number; hasMore: boolean };
+
+export type UsersFilters = { account?: string; type?: string; status?: string };
+
+export const getUsers = async (skip = 0, q = "", filters: UsersFilters = {}): Promise<AdminUsersPage> => {
+  const res = await api.get("/admin/users", { params: { skip, q, ...filters } });
+  return res.data.data;
+};
+
+// Set a user's account flags (admin role / email suppression).
+export const updateUser = async (
+  id: string,
+  data: { isAdmin?: boolean; suppressEmails?: boolean },
+): Promise<{ id: string; isAdmin: boolean; suppressEmails: boolean }> => {
+  const res = await api.patch(`/admin/users/${id}`, data);
+  return res.data.data;
+};
+
 // Typeahead search for granting private access (debounce on the client).
 export const searchUsers = async (q: string): Promise<AdminUserLite[]> => {
   const res = await api.get("/admin/users/search", { params: { q } });

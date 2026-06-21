@@ -1,11 +1,34 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient, useInfiniteQuery, keepPreviousData } from "@tanstack/react-query";
 import {
   getAdminPlugins, getAdminPlugin,
   createPlugin, updatePlugin, deletePlugin,
   getCustomerCount, getAdminNotificationCount,
   getCountryAnalytics, getPluginCountryAnalytics,
   getManagedCustomers, provisionCustomer, setCustomerEmails, grantLicense,
+  getUsers, updateUser,
 } from "@/lib/services/admin.service";
+
+const USERS_PAGE_SIZE = 20;
+
+export function useAdminUsers(q = "", filters: { account?: string; type?: string; status?: string } = {}) {
+  return useInfiniteQuery({
+    queryKey: ["admin-users", q, filters],
+    queryFn: ({ pageParam }) => getUsers(pageParam, q, filters),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, allPages) =>
+      lastPage.hasMore ? allPages.length * USERS_PAGE_SIZE : undefined,
+    placeholderData: keepPreviousData, // keep the list visible while a new search/filter loads
+  });
+}
+
+export function useUpdateUser() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: { isAdmin?: boolean; suppressEmails?: boolean } }) =>
+      updateUser(id, data),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-users"] }),
+  });
+}
 
 export function useCountryAnalytics() {
   return useQuery({
